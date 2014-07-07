@@ -6,7 +6,7 @@ module Webshot
     include Singleton
 
     def initialize(opts = {})
-      Webshot.capybara_setup!
+      Webshot.capybara_setup!(opts)
       width  = opts.fetch(:width, Webshot.width)
       height = opts.fetch(:height, Webshot.height)
       user_agent = opts.fetch(:user_agent, Webshot.user_agent)
@@ -38,11 +38,18 @@ module Webshot
         Capybara.reset_sessions! unless @session_started
         @session_started = false
 
-        # Open page
         visit url
 
         # Timeout
         sleep opts[:timeout] if opts[:timeout]
+        #
+        # if opts[:include_js].present?
+        #   page.driver.include_js(opts[:include_js][:url], opts[:include_js][:callback])
+        # end
+
+        if opts[:execute_script].present?
+          page.driver.execute_script(opts[:execute_script])
+        end
 
         # Check response code
         if page.driver.status_code.to_i == 200 || page.driver.status_code.to_i / 100 == 3

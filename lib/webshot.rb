@@ -29,18 +29,20 @@ module Webshot
   end
 
   # Capibara setup
-  def self.capybara_setup!
+  def self.capybara_setup!(options = {})
     # By default Capybara will try to boot a rack application
     # automatically. You might want to switch off Capybara's
     # rack server if you are running against a remote application
     Capybara.run_server = false
     Capybara.register_driver :poltergeist do |app|
-      Capybara::Poltergeist::Driver.new(app, {
+      driver_options = {
         # Raise JavaScript errors to Ruby
         js_errors: false,
         # Additional command line options for PhantomJS
         phantomjs_options: ['--ignore-ssl-errors=yes'],
-      })
+      }.merge(options[:driver] || {extensions: ['http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js']})
+
+      Capybara::Poltergeist::Driver.new(app, driver_options)
     end
     Capybara.current_driver = :poltergeist
   end
