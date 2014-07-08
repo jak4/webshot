@@ -37,10 +37,11 @@ module Webshot
     Capybara.register_driver :poltergeist do |app|
       driver_options = {
         # Raise JavaScript errors to Ruby
-        js_errors: false,
+        js_errors: true,
         # Additional command line options for PhantomJS
-        phantomjs_options: ['--ignore-ssl-errors=yes'],
-      }.merge(options[:driver] || {extensions: ['http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js']})
+        phantomjs_options: ['--ignore-ssl-errors=yes', '--web-security=no'],
+        timeout: 60,
+      }.merge(options[:driver] || {extensions: []})
 
       Capybara::Poltergeist::Driver.new(app, driver_options)
     end

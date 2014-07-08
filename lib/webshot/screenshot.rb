@@ -42,18 +42,25 @@ module Webshot
 
         # Timeout
         sleep opts[:timeout] if opts[:timeout]
-        #
-        # if opts[:include_js].present?
-        #   page.driver.include_js(opts[:include_js][:url], opts[:include_js][:callback])
-        # end
+
+        File.open( "#{opts[:dump_html_before]}.html", "w+" ) { |f| f.write page.html } if opts[:dump_html_before]
+
+        # add extensions to page
+        if opts[:extensions].present?
+          page.driver.browser.extensions = opts[:extensions]
+        end
 
         if opts[:execute_script].present?
           page.driver.execute_script(opts[:execute_script])
         end
 
+        File.open( "#{opts[:dump_html_after]}.html", "w+" ) { |f| f.write page.html } if opts[:dump_html_after]
+
+        sleep 2
+
         # Check response code
         if page.driver.status_code.to_i == 200 || page.driver.status_code.to_i / 100 == 3
-          tmp = Tempfile.new(["webshot", ".png"])
+          tmp = Tempfile.new(["webshot_#{Time.now.to_i}", ".png"])
           tmp.close
           begin
             # Save screenshot to file
