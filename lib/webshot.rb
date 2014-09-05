@@ -36,7 +36,7 @@ module Webshot
     Capybara.register_driver :poltergeist do |app|
       driver_options = {
         # Raise JavaScript errors to Ruby
-        js_errors: true,
+        js_errors: false,
         # Additional command line options for PhantomJS
         phantomjs_options: ['--ignore-ssl-errors=yes', '--web-security=no'],
         timeout: 60,
