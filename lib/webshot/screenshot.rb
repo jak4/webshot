@@ -10,7 +10,6 @@ module Webshot
       width  = opts.fetch(:width, Webshot.width)
       height = opts.fetch(:height, Webshot.height)
       user_agent = opts.fetch(:user_agent, Webshot.user_agent)
-
       # Browser settings
       page.driver.resize(width, height)
       page.driver.headers = {
